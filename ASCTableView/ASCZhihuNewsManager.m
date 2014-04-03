@@ -14,12 +14,14 @@
 @property (nonatomic, retain) NSString *lastNewsUrl;
 @property (nonatomic, retain) ASCZhihu *newsListings;
 @property (nonatomic, retain) NSMutableDictionary *imageDictionary;
+@property (nonatomic, retain) NSMutableDictionary *newsDictionary;
 @end
 
 @implementation ASCZhihuNewsManager
 @synthesize lastNewsUrl;
 @synthesize newsListings;
 @synthesize imageDictionary;
+@synthesize newsDictionary;
 
 +(ASCZhihuNewsManager *)sharedManager
 {
@@ -46,6 +48,14 @@
     return imageDictionary;
 }
 
+-(NSMutableDictionary *)newsDictionary
+{
+    if (newsDictionary == nil) {
+        newsDictionary = [[NSMutableDictionary alloc] init];
+    }
+    return newsDictionary;
+}
+
 #pragma mark - fetchNews
 
 +(id)fetchLastNewsMap
@@ -69,21 +79,39 @@
     return result;
 }
 
++(void)fetchNewsWithUrl:(NSString*)url complete:(void (^)(id))block
+{
+    if ([[ASCZhihuNewsManager sharedManager].newsDictionary objectForKey:url] == nil) {
+        [[ASCZhihuNewsManager sharedManager] downloadNewsWithUrl:url complete:block];
+    }else {
+        block([[ASCZhihuNewsManager sharedManager].newsDictionary objectForKey:url]);
+    }
+}
+
+-(void)downloadNewsWithUrl:(NSString*)aurl complete:(void (^)(id))block
+{
+    dispatch_queue_t download = dispatch_queue_create("downloadNews", NULL);
+    dispatch_async(download, ^{
+        
+        NSURL *url = [NSURL URLWithString:aurl];
+        NSURLRequest *urlRequest = [[NSURLRequest alloc] initWithURL:url];
+        NSData *data = [NSURLConnection sendSynchronousRequest:urlRequest returningResponse:nil error:nil];
+        NSString *string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+       
+        dispatch_async(dispatch_get_main_queue(), ^{
+            block(string);
+        });
+    });
+}
+
 #pragma mark - downloadImage
 
-+(void)drawImageWithUrl:(NSString *)url inView:(id)view
++(void)drawImageWithUrl:(NSString *)url complete:(void (^)(id))block;
 {
     if ([[ASCZhihuNewsManager sharedManager].imageDictionary objectForKey:url] == nil) {
-        [[ASCZhihuNewsManager sharedManager] downloadImageWithUrl:url complete:^(UIImage *image) {
-            if ([view respondsToSelector:@selector(setImage:)]) {
-                [view performSelector:@selector(setImage:) withObject:image];
-            }
-        }];
+        [[ASCZhihuNewsManager sharedManager] downloadImageWithUrl:url complete:block];
     }else {
-        if ([view respondsToSelector:@selector(setImage:)]) {
-            [view performSelector:@selector(setImage:) withObject:
-             [[ASCZhihuNewsManager sharedManager].imageDictionary objectForKey:url]];
-        }
+        block([[ASCZhihuNewsManager sharedManager].imageDictionary objectForKey:url]);
     }
 }
 
