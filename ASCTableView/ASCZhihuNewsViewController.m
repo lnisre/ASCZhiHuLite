@@ -26,7 +26,7 @@
 @synthesize scrollView;
 
 -(void)setNews:(ASCZhihuNews *)anews
-{
+{  
     news = anews;
 
     [ASCZhihuNewsManager drawImageWithUrl:anews.imageUrl complete:^(UIImage *aimage) {
