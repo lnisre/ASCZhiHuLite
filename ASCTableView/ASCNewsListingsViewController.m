@@ -10,6 +10,7 @@
 #import "ASCZhihu.h"
 #import "ASCZhihuNewsManager.h"
 #import "ASCNewsCell.h"
+#import "ASCZhihuNewsViewController.h"
 
 static NSString *CellIdentifier = @"Cell";
 
@@ -80,6 +81,14 @@ static NSString *CellIdentifier = @"Cell";
     return cell;
 }
 
+- (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    ASCZhihuNewsViewController *newsViewController = [[ASCZhihuNewsViewController alloc] initWithNibName:@"ASCZhihuNewsView" bundle:nil];
+    [newsViewController setNews:[self.newsListings.news objectAtIndex:indexPath.row]];
+    [self.navigationController pushViewController:newsViewController animated:YES];
+    return indexPath;
+}
+
 /*
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
@@ -119,16 +128,17 @@ static NSString *CellIdentifier = @"Cell";
 }
 */
 
-/*
-#pragma mark - Navigation
 
+#pragma mark - Navigation
+/*
 // In a story board-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
-}
 
- */
+}
+*/
+
 
 @end

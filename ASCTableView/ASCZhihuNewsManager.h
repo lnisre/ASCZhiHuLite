@@ -7,11 +7,14 @@
 //
 
 #import <Foundation/Foundation.h>
+@class ASCZhihuNews;
 
 @interface ASCZhihuNewsManager : NSObject
 
 //+(ASCZhihuNewsManager*)sharedManager;
 +(id)fetchLastNewsMap;
++(void)fetchNewsWithUrl:(NSString*)url complete:(void (^)(id))block;
 
-+(void)drawImageWithUrl:(NSString*)url inView:(id)view;
++(void)drawImageWithUrl:(NSString*)url complete:(void (^)(id))block;
+
 @end

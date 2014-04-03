@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AD97CA8518ED9CBB0057FCAC /* ASCZhihuNewsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD97CA8418ED9CBB0057FCAC /* ASCZhihuNewsViewController.m */; };
+		AD97CA8718EDA5BD0057FCAC /* ASCZhihuNewsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD97CA8618EDA5BD0057FCAC /* ASCZhihuNewsView.xib */; };
 		ADBC4FAA18EB8CA7000A8114 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBC4FA918EB8CA7000A8114 /* Foundation.framework */; };
 		ADBC4FAC18EB8CA7000A8114 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBC4FAB18EB8CA7000A8114 /* CoreGraphics.framework */; };
 		ADBC4FAE18EB8CA7000A8114 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBC4FAD18EB8CA7000A8114 /* UIKit.framework */; };
@@ -40,6 +42,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		AD97CA8318ED9CBB0057FCAC /* ASCZhihuNewsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASCZhihuNewsViewController.h; sourceTree = "<group>"; };
+		AD97CA8418ED9CBB0057FCAC /* ASCZhihuNewsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASCZhihuNewsViewController.m; sourceTree = "<group>"; };
+		AD97CA8618EDA5BD0057FCAC /* ASCZhihuNewsView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ASCZhihuNewsView.xib; sourceTree = "<group>"; };
 		ADBC4FA618EB8CA7000A8114 /* ASCTableView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ASCTableView.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		ADBC4FA918EB8CA7000A8114 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		ADBC4FAB18EB8CA7000A8114 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -147,6 +152,9 @@
 				ADBC4FEB18EC4555000A8114 /* ASCNewsListingsViewController.m */,
 				ADBC4FED18EC4A30000A8114 /* ASCNewsCell.h */,
 				ADBC4FEE18EC4A30000A8114 /* ASCNewsCell.m */,
+				AD97CA8318ED9CBB0057FCAC /* ASCZhihuNewsViewController.h */,
+				AD97CA8418ED9CBB0057FCAC /* ASCZhihuNewsViewController.m */,
+				AD97CA8618EDA5BD0057FCAC /* ASCZhihuNewsView.xib */,
 			);
 			path = ASCTableView;
 			sourceTree = "<group>";
@@ -257,6 +265,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AD97CA8718EDA5BD0057FCAC /* ASCZhihuNewsView.xib in Resources */,
 				ADBC4FC018EB8CA7000A8114 /* Main_iPad.storyboard in Resources */,
 				ADBC4FC518EB8CA7000A8114 /* Images.xcassets in Resources */,
 				ADBC4FBD18EB8CA7000A8114 /* Main_iPhone.storyboard in Resources */,
@@ -282,6 +291,7 @@
 				ADBC4FBA18EB8CA7000A8114 /* ASCAppDelegate.m in Sources */,
 				ADBC4FEC18EC4555000A8114 /* ASCNewsListingsViewController.m in Sources */,
 				ADBC4FE318EB8FA9000A8114 /* ASCZhihuNews.m in Sources */,
+				AD97CA8518ED9CBB0057FCAC /* ASCZhihuNewsViewController.m in Sources */,
 				ADBC4FB618EB8CA7000A8114 /* main.m in Sources */,
 				ADBC4FEF18EC4A30000A8114 /* ASCNewsCell.m in Sources */,
 				ADBC4FC318EB8CA7000A8114 /* ASCViewController.m in Sources */,
@@ -505,6 +515,7 @@
 				ADBC4FDD18EB8CA7000A8114 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		ADBC4FDE18EB8CA7000A8114 /* Build configuration list for PBXNativeTarget "ASCTableViewTests" */ = {
 			isa = XCConfigurationList;
@@ -513,6 +524,7 @@
 				ADBC4FE018EB8CA7000A8114 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
