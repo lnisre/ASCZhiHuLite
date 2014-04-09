@@ -56,7 +56,7 @@
     if (self) {
 
         self.scrollView = [[UIScrollView alloc] initWithFrame:self.view.frame];
-        self.image = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 320, 170)];
+        self.image = [[UIImageView alloc] initWithFrame:CGRectMake(0, -100, 320, 270)];
         self.image.contentMode = UIViewContentModeScaleAspectFill;
         self.image.clipsToBounds = YES;
         [self.scrollView addSubview:self.image];
