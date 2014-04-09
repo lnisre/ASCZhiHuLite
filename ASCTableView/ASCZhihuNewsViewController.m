@@ -10,12 +10,14 @@
 #import "ASCZhihuNewsManager.h"
 #import "ASCZhihuNews.h"
 
-@interface ASCZhihuNewsViewController () <UIWebViewDelegate>
+@interface ASCZhihuNewsViewController () <UIWebViewDelegate, UIScrollViewDelegate>
 
 @property (retain, nonatomic) IBOutlet UIImageView *image;
 @property (retain, nonatomic) IBOutlet UITextView *context;
 @property (retain, nonatomic) IBOutlet UIWebView *webUI;
 @property (retain, nonatomic) IBOutlet UIScrollView *scrollView;
+@property (retain, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicatorView;
+
 
 @end
 
@@ -39,6 +41,8 @@
         self.scrollView.contentSize = CGSizeMake(320, self.image.bounds.size.height + self.context.bounds.size.height);
 
     }];
+    
+    [self.activityIndicatorView startAnimating];
 //    [ASCZhihuNewsManager fetchNewsWithUrl:anews.contextUrl complete:^(NSString *acontext) {
 //        NSAttributedString *attributedString = [[NSAttributedString alloc] initWithData:[acontext dataUsingEncoding:NSUnicodeStringEncoding] options:@{ NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType } documentAttributes:nil error:nil];
 //        self.context.attributedText = attributedString;
@@ -56,12 +60,19 @@
     if (self) {
 
         self.scrollView = [[UIScrollView alloc] initWithFrame:self.view.frame];
+        self.scrollView.delegate = self;
+        
         self.image = [[UIImageView alloc] initWithFrame:CGRectMake(0, -100, 320, 270)];
         self.image.contentMode = UIViewContentModeScaleAspectFill;
         self.image.clipsToBounds = YES;
         [self.scrollView addSubview:self.image];
 //        self.context = [[UITextView alloc] initWithFrame:CGRectMake(0, 170, 320, 400)];
 //        [self.context setScrollEnabled:NO];
+        
+        self.activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+        self.activityIndicatorView.center = CGPointMake(25, 20);
+        [self.activityIndicatorView setHidesWhenStopped:YES];
+        [self.scrollView addSubview:self.activityIndicatorView];
         
         self.webUI = [[UIWebView alloc] initWithFrame:CGRectMake(0, 170, 320, 400)];
         self.webUI.scrollView.scrollEnabled = NO;
@@ -79,6 +90,19 @@
     return self;
 }
 
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+	// Do any additional setup after loading the view.
+}
+
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
 - (void)handleTranslation:(UIPanGestureRecognizer*)recognizer
 {
     if (recognizer.state == UIGestureRecognizerStateChanged || recognizer.state == UIGestureRecognizerStateEnded) {
@@ -90,6 +114,7 @@
     
 }
 
+#pragma mark UIWebView
 
 -(void)webViewDidFinishLoad:(UIWebView *)webView
 {
@@ -107,18 +132,18 @@
     
     self.scrollView.contentSize = CGSizeMake(320, self.image.bounds.size.height + self.webUI.bounds.size.height);
 
+    [self.activityIndicatorView stopAnimating];
 }
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-	// Do any additional setup after loading the view.
-}
+#pragma mark UIScrollViewDelegate
 
-- (void)didReceiveMemoryWarning
+-(void)scrollViewDidEndDragging:(UIScrollView *)ascrollView willDecelerate:(BOOL)decelerate
 {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+    if (ascrollView.contentOffset.y <= -100) {
+        NSURLRequest *urlRequest = [NSURLRequest requestWithURL:[NSURL URLWithString:self.news.contextUrl]];
+        [self.webUI loadRequest:urlRequest];
+        [self.activityIndicatorView startAnimating];
+    }
 }
 
 @end
