@@ -23,35 +23,6 @@
             </objects>
             <point key="canvasLocation" x="-11" y="-154"/>
         </scene>
-        <!--News Listings View Controller-->
-        <scene sceneID="Ex1-0u-lWW">
-            <objects>
-                <tableViewController id="PWV-YI-fvX" customClass="ASCNewsListingsViewController" sceneMemberID="viewController">
-                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="8bw-Th-jV0">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <prototypes>
-                            <tableViewCell hidden="YES" contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="EFY-XV-oKM">
-                                <rect key="frame" x="0.0" y="22" width="320" height="44"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="EFY-XV-oKM" id="v95-al-gge">
-                                    <rect key="frame" x="0.0" y="0.0" width="287" height="43"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </tableViewCellContentView>
-                            </tableViewCell>
-                        </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="PWV-YI-fvX" id="UcV-sC-sjP"/>
-                            <outlet property="delegate" destination="PWV-YI-fvX" id="hzw-kG-76f"/>
-                        </connections>
-                    </tableView>
-                    <navigationItem key="navigationItem" id="GS2-6L-nb2"/>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="G0T-tr-Aos" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="496" y="-126"/>
-        </scene>
         <!--Navigation Controller-->
         <scene sceneID="ys2-Lu-WMu">
             <objects>

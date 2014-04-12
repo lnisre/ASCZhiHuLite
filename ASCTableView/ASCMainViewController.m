@@ -11,6 +11,7 @@
 #import "ASCZhihuNewsManager.h"
 #import "ASCZhihu.h"
 #import "ASCZhihuNews.h"
+#import "ASCZhihuNewsViewController.h"
 
 @interface ASCMainViewController () <UIScrollViewDelegate>
 
@@ -45,13 +46,16 @@
     UIScrollView *mainScrollView = [[UIScrollView alloc] initWithFrame:self.view.frame];
     
 
-    self.topNewsScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, 320, 200)];
+    self.topNewsScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, -100, 320, 300)];
     for (int i = 0; i < self.news.topStories.count; i++) {
         ASCZhihuNews *topNews = self.news.topStories[i];
-        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(i*320, -100, 320, 300)];
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(i*320, 0, 320, 300)];
         [ASCZhihuNewsManager drawImageWithUrl:topNews.imageUrl complete:^(id image) {
             imageView.image = image;
         }];
+        imageView.userInteractionEnabled = YES;
+        UITapGestureRecognizer *g = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickOnTopNews:)];
+        [imageView addGestureRecognizer:g];
         [self.topNewsScrollView addSubview:imageView];
         
         UILabel *topTitle = [[UILabel alloc] initWithFrame:CGRectMake(i*320 + 30, 125, 260, 60)];
@@ -105,6 +109,14 @@
     CGSize viewSize = self.topNewsScrollView.frame.size;
     CGRect rect = CGRectMake(sender.currentPage * viewSize.width, 0, viewSize.width, viewSize.height);
     [self.topNewsScrollView scrollRectToVisible:rect animated:YES];
+}
+
+- (void)clickOnTopNews:(UITapGestureRecognizer *)recognizer
+{
+    ASCZhihuNewsViewController *newsViewController = [[ASCZhihuNewsViewController alloc] initWithNibName:nil bundle:nil];
+    
+    [newsViewController setNews:[self.news.topStories objectAtIndex:self.topNewsPageControl.currentPage]];
+    [self.navigationController pushViewController:newsViewController animated:YES];
 }
 
 - (void)didReceiveMemoryWarning
