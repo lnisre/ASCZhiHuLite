@@ -13,7 +13,7 @@
 
 @interface ASCZhihu : NSObject
 
-@property (nonatomic, retain) NSDate* date;
+@property (nonatomic, retain) NSString* date;
 @property (nonatomic, retain) NSArray* news;
 @property (nonatomic, assign) BOOL isToday;
 @property (nonatomic, retain) NSArray* topStories;

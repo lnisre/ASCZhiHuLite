@@ -4,6 +4,25 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3747"/>
     </dependencies>
     <scenes>
+        <!--Main View Controller-->
+        <scene sceneID="HxZ-16-QIY">
+            <objects>
+                <viewController id="x6W-vo-OqR" customClass="ASCMainViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="nlv-Wu-0Mr"/>
+                        <viewControllerLayoutGuide type="bottom" id="IHP-Mo-EDN"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="eKc-7K-3ax">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="fk9-SW-CX1"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Png-TO-2RL" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-11" y="-154"/>
+        </scene>
         <!--News Listings View Controller-->
         <scene sceneID="Ex1-0u-lWW">
             <objects>
@@ -44,12 +63,12 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="PWV-YI-fvX" kind="relationship" relationship="rootViewController" id="0aR-Ef-t3e"/>
+                        <segue destination="x6W-vo-OqR" kind="relationship" relationship="rootViewController" id="RQq-nf-eYa"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wOu-j8-obF" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-30" y="-126"/>
+            <point key="canvasLocation" x="-488" y="-154"/>
         </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

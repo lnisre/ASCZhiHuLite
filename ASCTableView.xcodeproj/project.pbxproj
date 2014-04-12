@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		AD97CA8B18EDBED40057FCAC /* ASCZhihuNewsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = AD97CA8818EDBED40057FCAC /* ASCZhihuNewsView.xib */; };
 		AD97CA8C18EDBED40057FCAC /* ASCZhihuNewsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AD97CA8A18EDBED40057FCAC /* ASCZhihuNewsViewController.m */; };
 		ADBC4FAA18EB8CA7000A8114 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBC4FA918EB8CA7000A8114 /* Foundation.framework */; };
 		ADBC4FAC18EB8CA7000A8114 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBC4FAB18EB8CA7000A8114 /* CoreGraphics.framework */; };
@@ -29,6 +28,7 @@
 		ADBC4FE918EB8FF0000A8114 /* ASCZhihuNewsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = ADBC4FE818EB8FF0000A8114 /* ASCZhihuNewsManager.m */; };
 		ADBC4FEC18EC4555000A8114 /* ASCNewsListingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADBC4FEB18EC4555000A8114 /* ASCNewsListingsViewController.m */; };
 		ADBC4FEF18EC4A30000A8114 /* ASCNewsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = ADBC4FEE18EC4A30000A8114 /* ASCNewsCell.m */; };
+		ADE3B87718F76E1200768759 /* ASCMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADE3B87618F76E1200768759 /* ASCMainViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,7 +42,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		AD97CA8818EDBED40057FCAC /* ASCZhihuNewsView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ASCZhihuNewsView.xib; sourceTree = "<group>"; };
 		AD97CA8918EDBED40057FCAC /* ASCZhihuNewsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASCZhihuNewsViewController.h; sourceTree = "<group>"; };
 		AD97CA8A18EDBED40057FCAC /* ASCZhihuNewsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASCZhihuNewsViewController.m; sourceTree = "<group>"; };
 		ADBC4FA618EB8CA7000A8114 /* ASCTableView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ASCTableView.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -75,6 +74,8 @@
 		ADBC4FEB18EC4555000A8114 /* ASCNewsListingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASCNewsListingsViewController.m; sourceTree = "<group>"; };
 		ADBC4FED18EC4A30000A8114 /* ASCNewsCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASCNewsCell.h; sourceTree = "<group>"; };
 		ADBC4FEE18EC4A30000A8114 /* ASCNewsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASCNewsCell.m; sourceTree = "<group>"; };
+		ADE3B87518F76E1200768759 /* ASCMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASCMainViewController.h; sourceTree = "<group>"; };
+		ADE3B87618F76E1200768759 /* ASCMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASCMainViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -134,7 +135,6 @@
 		ADBC4FAF18EB8CA7000A8114 /* ASCTableView */ = {
 			isa = PBXGroup;
 			children = (
-				AD97CA8818EDBED40057FCAC /* ASCZhihuNewsView.xib */,
 				AD97CA8918EDBED40057FCAC /* ASCZhihuNewsViewController.h */,
 				AD97CA8A18EDBED40057FCAC /* ASCZhihuNewsViewController.m */,
 				ADBC4FB818EB8CA7000A8114 /* ASCAppDelegate.h */,
@@ -155,9 +155,8 @@
 				ADBC4FEB18EC4555000A8114 /* ASCNewsListingsViewController.m */,
 				ADBC4FED18EC4A30000A8114 /* ASCNewsCell.h */,
 				ADBC4FEE18EC4A30000A8114 /* ASCNewsCell.m */,
-				AD97CA8318ED9CBB0057FCAC /* ASCZhihuNewsViewController.h */,
-				AD97CA8418ED9CBB0057FCAC /* ASCZhihuNewsViewController.m */,
-				AD97CA8618EDA5BD0057FCAC /* ASCZhihuNewsView.xib */,
+				ADE3B87518F76E1200768759 /* ASCMainViewController.h */,
+				ADE3B87618F76E1200768759 /* ASCMainViewController.m */,
 			);
 			path = ASCTableView;
 			sourceTree = "<group>";
@@ -268,7 +267,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AD97CA8B18EDBED40057FCAC /* ASCZhihuNewsView.xib in Resources */,
 				ADBC4FC018EB8CA7000A8114 /* Main_iPad.storyboard in Resources */,
 				ADBC4FC518EB8CA7000A8114 /* Images.xcassets in Resources */,
 				ADBC4FBD18EB8CA7000A8114 /* Main_iPhone.storyboard in Resources */,
@@ -296,6 +294,7 @@
 				ADBC4FE318EB8FA9000A8114 /* ASCZhihuNews.m in Sources */,
 				AD97CA8C18EDBED40057FCAC /* ASCZhihuNewsViewController.m in Sources */,
 				ADBC4FB618EB8CA7000A8114 /* main.m in Sources */,
+				ADE3B87718F76E1200768759 /* ASCMainViewController.m in Sources */,
 				ADBC4FEF18EC4A30000A8114 /* ASCNewsCell.m in Sources */,
 				ADBC4FC318EB8CA7000A8114 /* ASCViewController.m in Sources */,
 				ADBC4FE618EB8FD3000A8114 /* ASCZhihu.m in Sources */,

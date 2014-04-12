@@ -25,11 +25,17 @@
 +(ASCZhihu *)ASCZhihuWithObject:(id)object
 {
     ASCZhihu * result = [[ASCZhihu alloc] init];
+    NSMutableArray *array = [[NSMutableArray alloc] init];
     result.date = [object objectForKey:kDate];
     result.isToday = [[object objectForKey:kIsToday] boolValue];
-    result.topStories = [object objectForKey:kTopStories];
     result.displayDate = [object objectForKey:kDisplayDate];
-    NSMutableArray *array = [[NSMutableArray alloc] init];
+//    result.topStories = [object objectForKey:kTopStories];
+    for (id topNews in [object objectForKey:kTopStories]) {
+        [array addObject:[ASCZhihuNews ASCZhihuNewWithObject:topNews]];
+    }
+    result.topStories = [array copy];
+    
+    [array removeAllObjects];
     for (id new in [object objectForKey:kNews]) {
         [array addObject:[ASCZhihuNews ASCZhihuNewWithObject:new]];
     }

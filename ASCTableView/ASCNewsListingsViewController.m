@@ -16,12 +16,13 @@ static NSString *CellIdentifier = @"Cell";
 
 @interface ASCNewsListingsViewController ()
 
-@property (nonatomic, retain) ASCZhihu *newsListings;
+@property (nonatomic, retain) ASCZhihu *todayNewsListing;
+@property (retain, nonatomic) IBOutlet UIImageView *topNews;
 
 @end
 
 @implementation ASCNewsListingsViewController
-@synthesize newsListings;
+@synthesize todayNewsListing;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -30,6 +31,12 @@ static NSString *CellIdentifier = @"Cell";
         // Custom initialization
     }
     return self;
+}
+
+- (void)awakeFromNib
+{
+    [super awakeFromNib];
+    
 }
 
 - (void)viewDidLoad
@@ -41,7 +48,7 @@ static NSString *CellIdentifier = @"Cell";
  
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-    self.newsListings = [ASCZhihuNewsManager fetchLastNewsMap];
+    self.todayNewsListing = [ASCZhihuNewsManager fetchLastNewsMap];
     
     self.tableView.rowHeight = 80.0;
     [self.tableView registerClass:[ASCNewsCell class] forCellReuseIdentifier:CellIdentifier];
@@ -68,7 +75,7 @@ static NSString *CellIdentifier = @"Cell";
 {
 //#warning Incomplete method implementation.
     // Return the number of rows in the section.
-    return self.newsListings.news.count;
+    return self.todayNewsListing.news.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -76,15 +83,32 @@ static NSString *CellIdentifier = @"Cell";
     ASCNewsCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
     // Configure the cell...
-    cell.news = [self.newsListings.news objectAtIndex:indexPath.row];
+    cell.news = [self.todayNewsListing.news objectAtIndex:indexPath.row];
     
     return cell;
 }
 
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, 30)];
+    UILabel *title = [[UILabel alloc] initWithFrame:header.frame];
+
+    NSString *date = [NSString stringWithFormat:@"   %@", self.todayNewsListing.displayDate];
+    NSAttributedString *string = [[NSAttributedString alloc] initWithString:date attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:11], NSForegroundColorAttributeName: [UIColor whiteColor]}];
+    [title setAttributedText:string];
+    
+    [title setBackgroundColor:[UIColor blueColor]];
+    [title setAlpha:0.9];
+    [header addSubview:title];
+    
+    return header;
+}
+
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    ASCZhihuNewsViewController *newsViewController = [[ASCZhihuNewsViewController alloc] initWithNibName:@"ASCZhihuNewsView" bundle:nil];
-    [newsViewController setNews:[self.newsListings.news objectAtIndex:indexPath.row]];
+    ASCZhihuNewsViewController *newsViewController = [[ASCZhihuNewsViewController alloc] initWithNibName:nil bundle:nil];
+    
+    [newsViewController setNews:[self.todayNewsListing.news objectAtIndex:indexPath.row]];
     [self.navigationController pushViewController:newsViewController animated:YES];
     return indexPath;
 }
