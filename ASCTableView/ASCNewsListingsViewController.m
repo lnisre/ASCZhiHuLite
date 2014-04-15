@@ -18,11 +18,15 @@ static NSString *CellIdentifier = @"Cell";
 
 @property (nonatomic, retain) ASCZhihu *todayNewsListing;
 @property (retain, nonatomic) IBOutlet UIImageView *topNews;
+@property (retain, nonatomic) NSMutableArray *beforeNewsListings;
+@property (retain, nonatomic) NSDate *loadedDate;
 
 @end
 
 @implementation ASCNewsListingsViewController
+
 @synthesize todayNewsListing;
+@synthesize beforeNewsListings;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -31,6 +35,14 @@ static NSString *CellIdentifier = @"Cell";
         // Custom initialization
     }
     return self;
+}
+
+-(NSMutableArray *)beforeNewsListings
+{
+    if (beforeNewsListings == nil) {
+        beforeNewsListings = [[NSMutableArray alloc] init];
+    }
+    return beforeNewsListings;
 }
 
 - (void)awakeFromNib
@@ -50,6 +62,10 @@ static NSString *CellIdentifier = @"Cell";
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     self.todayNewsListing = [ASCZhihuNewsManager fetchLastNewsMap];
     
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat: @"yyyyMMdd"];
+    self.loadedDate = [dateFormatter dateFromString:self.todayNewsListing.date];
+
     self.tableView.rowHeight = 80.0;
     [self.tableView registerClass:[ASCNewsCell class] forCellReuseIdentifier:CellIdentifier];
     [self.tableView reloadData];
@@ -62,20 +78,42 @@ static NSString *CellIdentifier = @"Cell";
     // Dispose of any resources that can be recreated.
 }
 
+
+-(NSUInteger)loadMoreNews
+{
+    NSDate *tempDate = [self.loadedDate dateByAddingTimeInterval:-60*60*24];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyyMMdd"];
+    NSString *date = [dateFormatter stringFromDate:tempDate];
+    if (![date isEqualToString:[(ASCZhihu*)[self.beforeNewsListings lastObject] date]]) {
+        
+        id news = [ASCZhihuNewsManager fetchBeforeNewsMap:date];
+        [self.beforeNewsListings addObject:news];
+        self.loadedDate = tempDate;
+        [self.tableView reloadData];
+        return [[news news] count];
+    }
+    return 0;
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
 //#warning Potentially incomplete method implementation.
     // Return the number of sections.
-    return 1;
+    return self.beforeNewsListings.count + 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
 //#warning Incomplete method implementation.
     // Return the number of rows in the section.
-    return self.todayNewsListing.news.count;
+    if (section == 0) {
+        return self.todayNewsListing.news.count;
+    }else {
+        return [[[self.beforeNewsListings objectAtIndex:section-1] news] count];
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -83,7 +121,12 @@ static NSString *CellIdentifier = @"Cell";
     ASCNewsCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
     // Configure the cell...
-    cell.news = [self.todayNewsListing.news objectAtIndex:indexPath.row];
+    
+    if (indexPath.section == 0) {
+        cell.news = [self.todayNewsListing.news objectAtIndex:indexPath.row];
+    }else {
+        cell.news = [[[self.beforeNewsListings objectAtIndex:indexPath.section-1] news] objectAtIndex:indexPath.row];
+    }
     
     return cell;
 }
@@ -93,7 +136,12 @@ static NSString *CellIdentifier = @"Cell";
     UIView *header = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, 30)];
     UILabel *title = [[UILabel alloc] initWithFrame:header.frame];
 
-    NSString *date = [NSString stringWithFormat:@"   %@", self.todayNewsListing.displayDate];
+    NSString *date = nil;
+    if (section == 0) {
+        date = [NSString stringWithFormat:@"   %@", self.todayNewsListing.displayDate];
+    }else {
+        date = [NSString stringWithFormat:@"   %@", [[self.beforeNewsListings objectAtIndex:section-1] displayDate]];
+    }
     NSAttributedString *string = [[NSAttributedString alloc] initWithString:date attributes:@{NSFontAttributeName: [UIFont systemFontOfSize:11], NSForegroundColorAttributeName: [UIColor whiteColor]}];
     [title setAttributedText:string];
     

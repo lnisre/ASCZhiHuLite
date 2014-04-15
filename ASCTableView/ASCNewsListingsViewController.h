@@ -10,4 +10,6 @@
 
 @interface ASCNewsListingsViewController : UITableViewController
 
+-(NSUInteger)loadMoreNews;
+
 @end

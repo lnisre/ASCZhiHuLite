@@ -12,9 +12,13 @@
 @interface ASCZhihuNewsManager ()
 
 @property (nonatomic, retain) NSString *lastNewsUrl;
+@property (nonatomic, retain) NSString *beforeNewsUrl;
 @property (nonatomic, retain) ASCZhihu *newsListings;
 @property (nonatomic, retain) NSMutableDictionary *imageDictionary;
 @property (nonatomic, retain) NSMutableDictionary *newsDictionary;
+@property (nonatomic, retain) NSMutableDictionary *beforeNewsListings;
+
+@property (nonatomic, retain) dispatch_queue_t download;
 @end
 
 @implementation ASCZhihuNewsManager
@@ -22,6 +26,7 @@
 @synthesize newsListings;
 @synthesize imageDictionary;
 @synthesize newsDictionary;
+@synthesize beforeNewsListings;
 
 +(ASCZhihuNewsManager *)sharedManager
 {
@@ -37,6 +42,7 @@
 -(void)setUp
 {
     self.lastNewsUrl = @"http://news-at.zhihu.com/api/2/news/latest";
+    self.beforeNewsUrl = @"http://news.at.zhihu.com/api/2/news/before/";
 }
 
 #pragma mark - synthesize
@@ -54,6 +60,22 @@
         newsDictionary = [[NSMutableDictionary alloc] init];
     }
     return newsDictionary;
+}
+
+-(NSMutableDictionary *)beforeNewsListings
+{
+    if (beforeNewsListings == nil) {
+        beforeNewsListings = [[NSMutableDictionary alloc] init];
+    }
+    return beforeNewsListings;
+}
+
+-(dispatch_queue_t)download
+{
+    if (_download == nil) {
+        _download = dispatch_queue_create("downloadNews", NULL);
+    }
+    return _download;
 }
 
 #pragma mark - fetchNews
@@ -79,6 +101,33 @@
     return result;
 }
 
++(id)fetchBeforeNewsMap:(NSString *)date
+{
+    id result = nil;
+    if ([[ASCZhihuNewsManager sharedManager].beforeNewsListings objectForKey:date] == nil) {
+        result = [[ASCZhihuNewsManager sharedManager] fetchBeforeNewsMap:date];
+        
+        [[ASCZhihuNewsManager sharedManager].beforeNewsListings setObject:result forKey:date];
+    }else {
+        result = [[ASCZhihuNewsManager sharedManager].beforeNewsListings objectForKey:date];
+    }
+    return result;
+}
+
+-(id)fetchBeforeNewsMap:(NSString *)date
+{
+    id result = nil;
+    NSString *string = [NSString stringWithFormat:@"%@%@", self.beforeNewsUrl, date];
+    NSURL *url = [NSURL URLWithString:string];
+    NSURLRequest *urlRequest = [[NSURLRequest alloc] initWithURL:url];
+    NSData *data = [NSURLConnection sendSynchronousRequest:urlRequest returningResponse:nil error:nil];
+    id json = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+    if ([json isKindOfClass:[NSMutableDictionary class]]) {
+        result = [ASCZhihu ASCZhihuWithObject:json];
+    }
+    return result;
+}
+
 +(void)fetchNewsWithUrl:(NSString*)url complete:(void (^)(id))block
 {
     if ([[ASCZhihuNewsManager sharedManager].newsDictionary objectForKey:url] == nil) {
@@ -90,8 +139,7 @@
 
 -(void)downloadNewsWithUrl:(NSString*)aurl complete:(void (^)(id))block
 {
-    dispatch_queue_t download = dispatch_queue_create("downloadNews", NULL);
-    dispatch_async(download, ^{
+    dispatch_async(self.download, ^{
         
         NSURL *url = [NSURL URLWithString:aurl];
         NSURLRequest *urlRequest = [[NSURLRequest alloc] initWithURL:url];
@@ -117,8 +165,7 @@
 
 -(void)downloadImageWithUrl:(NSString *)aurl complete:(void (^)(UIImage*))block
 {
-    dispatch_queue_t download = dispatch_queue_create("downloadImage", NULL);
-    dispatch_async(download, ^{
+    dispatch_async(self.download, ^{
         NSURL *url = [NSURL URLWithString:aurl];
         NSURLRequest *urlRequest = [[NSURLRequest alloc] initWithURL:url];
         NSData *data = [NSURLConnection sendSynchronousRequest:urlRequest returningResponse:nil error:nil];

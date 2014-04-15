@@ -19,6 +19,7 @@
 @property (nonatomic, retain) ASCZhihu *news;
 @property (nonatomic, retain) IBOutlet UIPageControl *topNewsPageControl;
 @property (nonatomic, retain) IBOutlet UIScrollView *topNewsScrollView;
+@property (nonatomic, retain) IBOutlet UIScrollView *mainScrollView;
 
 @end
 
@@ -28,6 +29,7 @@
 @synthesize news;
 @synthesize topNewsPageControl;
 @synthesize topNewsScrollView;
+@synthesize mainScrollView;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -43,8 +45,8 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     self.news = [ASCZhihuNewsManager fetchLastNewsMap];
-    UIScrollView *mainScrollView = [[UIScrollView alloc] initWithFrame:self.view.frame];
-    
+    self.mainScrollView = [[UIScrollView alloc] initWithFrame:self.view.frame];
+    self.mainScrollView.delegate = self;
 
     self.topNewsScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, -100, 320, 300)];
     for (int i = 0; i < self.news.topStories.count; i++) {
@@ -72,32 +74,41 @@
     self.topNewsScrollView.showsHorizontalScrollIndicator = NO;
     self.topNewsScrollView.showsVerticalScrollIndicator = NO;
     self.topNewsScrollView.delegate = self;
-    [mainScrollView addSubview:self.topNewsScrollView];
+    [self.mainScrollView addSubview:self.topNewsScrollView];
     
     self.topNewsPageControl =[[UIPageControl alloc] initWithFrame:CGRectMake(0, 170, 320, 30)];
     self.topNewsPageControl.numberOfPages = self.news.topStories.count;
     self.topNewsPageControl.currentPage = 0;
     [self.topNewsPageControl addTarget:self action:@selector(pageTurn:) forControlEvents:UIControlEventValueChanged];
-    [mainScrollView addSubview:self.topNewsPageControl];
+    [self.mainScrollView addSubview:self.topNewsPageControl];
     
     self.newsListingViewController = [[ASCNewsListingsViewController alloc] initWithNibName:nil bundle:nil];
     self.newsListingViewController.tableView.frame = CGRectMake(0, 200, 320, 30 + 80*self.news.news.count);
     self.newsListingViewController.tableView.scrollEnabled = NO;
-    [mainScrollView addSubview:self.newsListingViewController.tableView];
-    mainScrollView.contentSize = CGSizeMake(320, self.topNewsScrollView.bounds.size.height + self.newsListingViewController.tableView.bounds.size.height);
+    [self.mainScrollView addSubview:self.newsListingViewController.tableView];
+    self.mainScrollView.contentSize = CGSizeMake(320, self.topNewsScrollView.bounds.size.height + self.newsListingViewController.tableView.bounds.size.height);
     
-    [self.view addSubview:mainScrollView];
+    [self.view addSubview:self.mainScrollView];
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
     //更新UIPageControl的当前页
-    if (scrollView != self.topNewsScrollView) {
+    if (scrollView == self.topNewsScrollView) {
+        
+        CGPoint offset = scrollView.contentOffset;
+        CGRect bounds = scrollView.frame;
+        [self.topNewsPageControl setCurrentPage:offset.x/bounds.size.width];
         return ;
     }
-    CGPoint offset = scrollView.contentOffset;
-    CGRect bounds = scrollView.frame;
-    [self.topNewsPageControl setCurrentPage:offset.x/bounds.size.width];
+    if (scrollView == self.mainScrollView) {
+        if (scrollView.contentOffset.y + scrollView.bounds.size.height >= scrollView.contentSize.height) {
+            NSUInteger addNews = [self.newsListingViewController loadMoreNews];
+            CGRect oldRect = self.newsListingViewController.tableView.frame;
+            self.newsListingViewController.tableView.frame = CGRectMake(oldRect.origin.x, oldRect.origin.y, oldRect.size.width, oldRect.size.height + 30 + 80*addNews);
+            self.mainScrollView.contentSize = CGSizeMake(320, self.topNewsScrollView.bounds.size.height + self.newsListingViewController.tableView.bounds.size.height);
+        }
+    }
 }
 
 //然后是点击UIPageControl时的响应函数pageTurn

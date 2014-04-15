@@ -17,4 +17,6 @@
 
 +(void)drawImageWithUrl:(NSString*)url complete:(void (^)(id))block;
 
++(id)fetchBeforeNewsMap:(NSString *)date;
+
 @end
