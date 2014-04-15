@@ -81,15 +81,14 @@ static NSString *CellIdentifier = @"Cell";
 
 -(NSUInteger)loadMoreNews
 {
-    NSDate *tempDate = [self.loadedDate dateByAddingTimeInterval:-60*60*24];
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyyMMdd"];
-    NSString *date = [dateFormatter stringFromDate:tempDate];
-    if (![date isEqualToString:[(ASCZhihu*)[self.beforeNewsListings lastObject] date]]) {
-        
+    NSString *date = [dateFormatter stringFromDate:self.loadedDate];
+    if (self.beforeNewsListings.count == 0 || [date isEqualToString:[(ASCZhihu*)[self.beforeNewsListings lastObject] date]]) {
+//        NSLog(@"load %@", date);
         id news = [ASCZhihuNewsManager fetchBeforeNewsMap:date];
         [self.beforeNewsListings addObject:news];
-        self.loadedDate = tempDate;
+        self.loadedDate = [self.loadedDate dateByAddingTimeInterval:-60*60*24];
         [self.tableView reloadData];
         return [[news news] count];
     }
