@@ -11,7 +11,7 @@
 #import <Foundation/Foundation.h>
 #import "ASCZhihuNews.h"
 
-@interface ASCZhihu : NSObject
+@interface ASCZhihu : NSObject <NSCoding>
 
 @property (nonatomic, retain) NSString* date;
 @property (nonatomic, retain) NSArray* news;

@@ -43,4 +43,27 @@
     return result;
 }
 
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    [coder encodeObject:self.date forKey:kDate];
+    [coder encodeObject:self.displayDate forKey:kDisplayDate];
+    [coder encodeBool:self.isToday forKey:kIsToday];
+    [coder encodeObject:self.news forKey:kNews];
+    [coder encodeObject:self.topStories forKey:kTopStories];
+}
+
+- (instancetype)initWithCoder:(NSCoder *)coder
+{
+    self = [self init];
+    if (self) {
+        self.date = [coder decodeObjectForKey:kDate];
+        self.displayDate = [coder decodeObjectForKey:kDisplayDate];
+        self.isToday = [coder decodeBoolForKey:kIsToday];
+        self.news = [coder decodeObjectForKey:kNews];
+        self.topStories = [coder decodeObjectForKey:kTopStories];
+    }
+    return self;
+}
+
+
 @end

@@ -10,7 +10,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface ASCZhihuNews : NSObject
+@interface ASCZhihuNews : NSObject <NSCoding>
 
 @property (nonatomic, retain) NSString* title;
 @property (nonatomic, retain) NSString* contextUrl;

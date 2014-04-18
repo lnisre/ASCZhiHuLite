@@ -18,6 +18,9 @@
 @property (nonatomic, retain) NSMutableDictionary *newsDictionary;
 @property (nonatomic, retain) NSMutableDictionary *beforeNewsListings;
 
+@property (nonatomic, retain) NSString *lastNewsLocalPath;
+@property (nonatomic, retain) NSString *beforeNewsLocalPath;
+
 @property (nonatomic, retain) dispatch_queue_t download;
 @end
 
@@ -27,6 +30,8 @@
 @synthesize imageDictionary;
 @synthesize newsDictionary;
 @synthesize beforeNewsListings;
+@synthesize lastNewsLocalPath;
+@synthesize beforeNewsLocalPath;
 
 +(ASCZhihuNewsManager *)sharedManager
 {
@@ -43,6 +48,12 @@
 {
     self.lastNewsUrl = @"http://news-at.zhihu.com/api/2/news/latest";
     self.beforeNewsUrl = @"http://news.at.zhihu.com/api/2/news/before/";
+    NSString *docDirectory = [NSSearchPathForDirectoriesInDomains(NSDocumentationDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    self.lastNewsLocalPath = [docDirectory stringByAppendingString:@"lastNews"];
+    self.beforeNewsLocalPath = [docDirectory stringByAppendingString:@"beforeNews"];
+    
+    newsListings = [NSKeyedUnarchiver unarchiveObjectWithData:[NSData dataWithContentsOfFile:self.lastNewsLocalPath]];
+    beforeNewsListings = [NSKeyedUnarchiver unarchiveObjectWithData:[NSData dataWithContentsOfFile:self.beforeNewsLocalPath]];
 }
 
 #pragma mark - synthesize
@@ -78,6 +89,19 @@
     return _download;
 }
 
+#pragma mark - KeyedArchiver
+-(void)lastNewsKeyedAcrhiver
+{
+    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:self.newsListings];
+    [data writeToFile:self.lastNewsLocalPath atomically:YES];
+}
+
+-(void)beforeNewsKeyedAcrhiver
+{
+    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:self.beforeNewsListings];
+    [data writeToFile:self.beforeNewsLocalPath atomically:YES];
+}
+
 #pragma mark - fetchNews
 
 +(id)fetchLastNewsMap
@@ -108,6 +132,8 @@
         result = [[ASCZhihuNewsManager sharedManager] fetchBeforeNewsMap:date];
         
         [[ASCZhihuNewsManager sharedManager].beforeNewsListings setObject:result forKey:date];
+        
+        [[ASCZhihuNewsManager sharedManager] beforeNewsKeyedAcrhiver];
     }else {
         result = [[ASCZhihuNewsManager sharedManager].beforeNewsListings objectForKey:date];
     }

@@ -40,4 +40,32 @@
     return result;
 }
 
+
+-(void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [aCoder encodeObject:self.title forKey:kTitle];
+    [aCoder encodeObject:self.imageUrl forKey:kImage];
+    [aCoder encodeObject:self.shareUrl forKey:kShareUrl];
+    [aCoder encodeObject:contextUrl forKey:kUrl];
+    [aCoder encodeObject:self.thumail forKey:kThumbnail];
+    [aCoder encodeObject:self.gaPrefix forKey:kGaPrefix];
+    [aCoder encodeInteger:self.newId forKey:kId];
+}
+
+-(id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [self init];
+    if (self) {
+        self.title = [aDecoder decodeObjectForKey:kTitle];
+        self.imageUrl = [aDecoder decodeObjectForKey:kImage];
+        self.shareUrl = [aDecoder decodeObjectForKey:kShareUrl];
+        self.contextUrl = [aDecoder decodeObjectForKey:kUrl];
+        self.thumail = [aDecoder decodeObjectForKey:kThumbnail];
+        self.gaPrefix = [aDecoder decodeObjectForKey:kGaPrefix];
+        self.newId = [aDecoder decodeIntegerForKey:kId];
+    }
+    return self;
+}
+
+
 @end
