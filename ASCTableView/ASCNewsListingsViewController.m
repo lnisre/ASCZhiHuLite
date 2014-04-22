@@ -37,6 +37,19 @@ static NSString *CellIdentifier = @"Cell";
     return self;
 }
 
+-(void)setTodayNewsListing:(ASCZhihu *)atodayNewsListing
+{
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat: @"yyyyMMdd"];
+    NSComparisonResult result = [[dateFormatter dateFromString:atodayNewsListing.date] compare:[dateFormatter dateFromString:self.todayNewsListing.date]];
+    if (result == NSOrderedDescending
+        || (result == NSOrderedSame && atodayNewsListing.news.count > self.todayNewsListing.news.count)) {
+        todayNewsListing = atodayNewsListing;
+    }
+
+    [self.tableView reloadData];
+}
+
 -(NSMutableArray *)beforeNewsListings
 {
     if (beforeNewsListings == nil) {
@@ -60,7 +73,11 @@ static NSString *CellIdentifier = @"Cell";
  
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-    self.todayNewsListing = [ASCZhihuNewsManager fetchLastNewsMap];
+    self.todayNewsListing = [ASCZhihuNewsManager fetchLocalLastNewsMap];
+    [ASCZhihuNewsManager fetchLastNewsMapWithComplete:^(id news) {
+        self.todayNewsListing = news;
+        [self.tableView reloadData];
+    }];
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat: @"yyyyMMdd"];

@@ -13,7 +13,7 @@
 
 @property (nonatomic, retain) NSString *lastNewsUrl;
 @property (nonatomic, retain) NSString *beforeNewsUrl;
-@property (nonatomic, retain) ASCZhihu *newsListings;
+@property (nonatomic, retain) ASCZhihu *zhihuLastNews;
 @property (nonatomic, retain) NSMutableDictionary *imageDictionary;
 @property (nonatomic, retain) NSMutableDictionary *newsDictionary;
 @property (nonatomic, retain) NSMutableDictionary *beforeNewsListings;
@@ -26,7 +26,7 @@
 
 @implementation ASCZhihuNewsManager
 @synthesize lastNewsUrl;
-@synthesize newsListings;
+@synthesize zhihuLastNews;
 @synthesize imageDictionary;
 @synthesize newsDictionary;
 @synthesize beforeNewsListings;
@@ -52,7 +52,7 @@
     self.lastNewsLocalPath = [docDirectory stringByAppendingString:@"lastNews"];
     self.beforeNewsLocalPath = [docDirectory stringByAppendingString:@"beforeNews"];
     
-    newsListings = [NSKeyedUnarchiver unarchiveObjectWithData:[NSData dataWithContentsOfFile:self.lastNewsLocalPath]];
+    zhihuLastNews = [NSKeyedUnarchiver unarchiveObjectWithData:[NSData dataWithContentsOfFile:self.lastNewsLocalPath]];
     beforeNewsListings = [NSKeyedUnarchiver unarchiveObjectWithData:[NSData dataWithContentsOfFile:self.beforeNewsLocalPath]];
 }
 
@@ -92,7 +92,7 @@
 #pragma mark - KeyedArchiver
 -(void)lastNewsKeyedAcrhiver
 {
-    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:self.newsListings];
+    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:self.zhihuLastNews];
     [data writeToFile:self.lastNewsLocalPath atomically:YES];
 }
 
@@ -104,25 +104,51 @@
 
 #pragma mark - fetchNews
 
-+(id)fetchLastNewsMap
++(void)fetchLastNewsMapWithComplete:(void (^)(id))block
 {
-    if ([ASCZhihuNewsManager sharedManager].newsListings == nil) {
-        [ASCZhihuNewsManager sharedManager].newsListings = [[ASCZhihuNewsManager sharedManager] fetchLastNewsMap];
-    }
-    return [ASCZhihuNewsManager sharedManager].newsListings;
+    [[ASCZhihuNewsManager sharedManager] fetchLastNewsMapWithComplete:^(ASCZhihu* lastNews) {
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat: @"yyyyMMdd"];
+        NSComparisonResult result = [[dateFormatter dateFromString:lastNews.date] compare:[dateFormatter dateFromString:[ASCZhihuNewsManager sharedManager].zhihuLastNews.date]];
+        if (result == NSOrderedDescending) {
+            [ASCZhihuNewsManager sharedManager].zhihuLastNews = lastNews;
+            [[ASCZhihuNewsManager sharedManager] lastNewsKeyedAcrhiver];
+            block(lastNews);
+            return ;
+        }
+        if (result == NSOrderedSame && lastNews.news.count > [ASCZhihuNewsManager sharedManager].zhihuLastNews.news.count) {
+            [ASCZhihuNewsManager sharedManager].zhihuLastNews = lastNews;
+            [[ASCZhihuNewsManager sharedManager] lastNewsKeyedAcrhiver];
+            block(lastNews);
+            return ;
+        }
+    }];
 }
 
--(id)fetchLastNewsMap
+-(void)fetchLastNewsMapWithComplete:(void (^)(id))block
 {
-    id result = nil;
-    NSURL *url = [NSURL URLWithString:self.lastNewsUrl];
-    NSURLRequest *urlRequest = [[NSURLRequest alloc] initWithURL:url];
-    NSData *data = [NSURLConnection sendSynchronousRequest:urlRequest returningResponse:nil error:nil];
-    id json = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-    if ([json isKindOfClass:[NSMutableDictionary class]]) {
-        result = [ASCZhihu ASCZhihuWithObject:json];
+    dispatch_async(self.download, ^{
+        id result = nil;
+        NSURL *url = [NSURL URLWithString:self.lastNewsUrl];
+        NSURLRequest *urlRequest = [[NSURLRequest alloc] initWithURL:url];
+        NSData *data = [NSURLConnection sendSynchronousRequest:urlRequest returningResponse:nil error:nil];
+        id json = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+        if ([json isKindOfClass:[NSMutableDictionary class]]) {
+            result = [ASCZhihu ASCZhihuWithObject:json];
+        }
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            block(result);
+        });
+    });
+}
+
++(id)fetchLocalLastNewsMap
+{
+    if ([ASCZhihuNewsManager sharedManager].zhihuLastNews == nil) {
+        [ASCZhihuNewsManager sharedManager].zhihuLastNews = [NSKeyedUnarchiver unarchiveObjectWithData:[NSData dataWithContentsOfFile:[ASCZhihuNewsManager sharedManager].lastNewsLocalPath]];
     }
-    return result;
+    return [ASCZhihuNewsManager sharedManager].zhihuLastNews;
 }
 
 +(id)fetchBeforeNewsMap:(NSString *)date

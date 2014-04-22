@@ -12,7 +12,9 @@
 @interface ASCZhihuNewsManager : NSObject
 
 //+(ASCZhihuNewsManager*)sharedManager;
-+(id)fetchLastNewsMap;
++(void)fetchLastNewsMapWithComplete:(void (^)(id))block;
++(id)fetchLocalLastNewsMap;
+
 +(void)fetchNewsWithUrl:(NSString*)url complete:(void (^)(id))block;
 
 +(void)drawImageWithUrl:(NSString*)url complete:(void (^)(id))block;

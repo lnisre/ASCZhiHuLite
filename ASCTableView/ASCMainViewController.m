@@ -44,7 +44,12 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
-    self.news = [ASCZhihuNewsManager fetchLastNewsMap];
+    self.news = [ASCZhihuNewsManager fetchLocalLastNewsMap];
+    [ASCZhihuNewsManager fetchLastNewsMapWithComplete:^(id anews) {
+        self.news = anews;
+        [self reSet];
+        
+    }];
     self.mainScrollView = [[UIScrollView alloc] initWithFrame:self.view.frame];
     self.mainScrollView.delegate = self;
 
@@ -89,6 +94,37 @@
     self.mainScrollView.contentSize = CGSizeMake(320, self.topNewsScrollView.bounds.size.height + self.newsListingViewController.tableView.bounds.size.height);
     
     [self.view addSubview:self.mainScrollView];
+}
+
+-(void)reSet
+{
+    [[self.topNewsScrollView subviews] makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    for (int i = 0; i < self.news.topStories.count; i++) {
+        ASCZhihuNews *topNews = self.news.topStories[i];
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:CGRectMake(i*320, 0, 320, 300)];
+        [ASCZhihuNewsManager drawImageWithUrl:topNews.imageUrl complete:^(id image) {
+            imageView.image = image;
+        }];
+        imageView.userInteractionEnabled = YES;
+        UITapGestureRecognizer *g = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clickOnTopNews:)];
+        [imageView addGestureRecognizer:g];
+        [self.topNewsScrollView addSubview:imageView];
+        
+        UILabel *topTitle = [[UILabel alloc] initWithFrame:CGRectMake(i*320 + 30, 125, 260, 60)];
+        topTitle.numberOfLines = 2;
+        NSAttributedString *title = [[NSAttributedString alloc] initWithString:topNews.title attributes:@{NSFontAttributeName: [UIFont boldSystemFontOfSize:17], NSForegroundColorAttributeName: [UIColor whiteColor]}];
+        [topTitle setAttributedText:title];
+        
+        [self.topNewsScrollView addSubview:topTitle];
+    }
+    self.topNewsScrollView.contentSize = CGSizeMake(320*self.news.topStories.count, 300);
+
+    self.topNewsPageControl.numberOfPages = self.news.topStories.count;
+    self.topNewsPageControl.currentPage = 0;
+    
+    self.newsListingViewController.tableView.frame = CGRectMake(0, 200, 320, 30 + 80*self.news.news.count);
+    self.mainScrollView.contentSize = CGSizeMake(320, self.topNewsScrollView.bounds.size.height + self.newsListingViewController.tableView.bounds.size.height);
+
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
